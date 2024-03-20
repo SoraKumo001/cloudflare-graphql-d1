@@ -1,0 +1,8 @@
+import main from '../../{{SCRIPT_PATH}}';
+
+export default {
+	async fetch(request: Request, env: Record<string, unknown>, ctx: ExecutionContext): Promise<Response> {
+		await main(env as never);
+		return new Response('OK');
+	},
+};

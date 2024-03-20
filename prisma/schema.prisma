@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+generator pothos {
+  provider = "prisma-pothos-types"
+  output   = "../src/generated/pothos-types.ts"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Role{
+  id        String   @id @default(uuid())
+  name      String   @unique
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// @pothos-generator executable {include:["mutation","findMany"],authority:["ADMIN"]}
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String   @default("User")
+  posts     Post[]
+  roles     Role[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// @pothos-generator executable {include:["mutation"],authority:["USER"]}
+/// @pothos-generator input-data {data:{authorId:"%%USER%%"}}
+/// @pothos-generator where {include:["query"],where:{},authority:["USER"]}
+/// @pothos-generator where {include:["query"],where:{published:true}}
+/// @pothos-generator where {include:["update","delete"],where:{authorId:"%%USER%%"}}
+/// @pothos-generator order {orderBy:{title:"asc"}}
+model Post {
+  id          String     @id @default(uuid())
+  published   Boolean    @default(false)
+  title       String     @default("New Post")
+  content     String     @default("")
+  author      User?      @relation(fields: [authorId], references: [id])
+  authorId    String?
+  categories  Category[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  publishedAt DateTime   @default(now())
+}
+
+/// @pothos-generator executable {include:["mutation"],authority:["USER"]}
+/// @pothos-generator order {orderBy:{name:"asc"}}
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// enum Role {
+//   ADMIN
+//   USER
+// }

@@ -1,0 +1,38 @@
+{
+	"name": "cloudflare-graphql-d1",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"dev": "wrangler dev --minify --local",
+		"start": "wrangler dev",
+		"deploy": "wrangler deploy",
+		"prisma:generate": "prisma generate && tsx tools/fix-datamodel",
+		"prisma:migrate": "prisma migrate dev && tsx tools/fix-datamodel && tsx tools/migrate.ts && wrangler d1 migrations apply test-db",
+		"prisma:seed": " tsx ./tools/execute-worker prisma/seed",
+		"production:prisma:migrate": "wrangler d1 migrations apply test-db --remote",
+		"production:prisma:seed": "tsx ./tools/execute-worker -r prisma/seed -c wrangler.production.toml",
+		"production:secret": "wrangler secret put SECRET"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20240314.0",
+		"@colors/colors": "^1.6.0",
+		"@types/cookie": "^0.6.0",
+		"@types/minimist": "^1.2.5",
+		"minimist": "^1.2.8",
+		"prisma": "^5.11.0",
+		"typescript": "^5.4.2",
+		"wrangler": "^3.35.0",
+		"tsx": "^4.7.1"
+	},
+	"dependencies": {
+		"@pothos/core": "^3.41.0",
+		"@pothos/plugin-prisma": "^3.65.0",
+		"@pothos/plugin-prisma-utils": "^0.14.0",
+		"@prisma/adapter-d1": "^5.11.0",
+		"@prisma/client": "^5.11.0",
+		"cookie": "^0.6.0",
+		"graphql-yoga": "^5.2.0",
+		"jose": "^5.2.3",
+		"pothos-prisma-generator": "^1.0.2"
+	}
+}
