@@ -1,5 +1,6 @@
 import { PrismaD1 } from '@prisma/adapter-d1';
 import { PrismaClient } from '@prisma/client';
+import { WorkersFunction } from 'cloudflare-exec';
 
 type Env = {
 	DB: D1Database;
@@ -9,7 +10,7 @@ const formatNumber = (num: number) => {
 	return num.toString().padStart(2, '0');
 };
 
-export default async (env: Env) => {
+const main: WorkersFunction<Env> = async ({ env }) => {
 	const adapter = new PrismaD1(env.DB);
 	const prisma = new PrismaClient({ adapter });
 
@@ -99,3 +100,4 @@ export default async (env: Env) => {
 		}
 	});
 };
+export default main;

@@ -107,13 +107,13 @@ const schema = () => {
 	let schema: GraphQLSchema;
 	let builder: ReturnType<typeof createBuilder>;
 	const createSchema = async ({ env }: { env: Env }) => {
-		const adapter = new PrismaD1(env.DB);
-		const prisma = new PrismaClient({ adapter });
 		if (schema && builder) {
 			// Update the prisma client
-			builder.options.prisma.client = prisma;
+			// builder.options.prisma.client = prisma;
 			return schema;
 		}
+		const adapter = new PrismaD1(env.DB);
+		const prisma = new PrismaClient({ adapter });
 		// Create a new schema
 		builder = createBuilder(prisma);
 		const Upload = new GraphQLScalarType({
